@@ -9,20 +9,22 @@ public aspect Logger {
     Calendar cal = Calendar.getInstance();
     
     
-    pointcut transaction():execution(void *moneyMakeTransaction*(..));
-    pointcut money():execution(void *moneyWithdrawal*(..));
+    pointcut transaction():execution(void *money*(..));
     pointcut user():execution(void *createUser*(..));
     
  
     after() : transaction(){
-        writeFile("Transaccion realizada el: "+cal.getTime()+"\n");
-        System.out.println("");
-        System.out.println("Transaccion realizada el: "+cal.getTime()+"\n");
-    }
-    after() : money(){
-        writeFile("Dinero retirado el :  "+cal.getTime()+"\n");
-        System.out.println("");
-        System.out.println("Dinero retirado el : "+cal.getTime()+"\n");
+        String t=thisJoinPoint.getSignature().getName();
+        if (t.equals("moneyMakeTransaction")) {
+        	writeFile("Deposito realizado el: "+cal.getTime()+"\n");
+        	System.out.println("");
+        	System.out.println("Transaccion realizada (Deposito) el: "+cal.getTime()+"\n");
+        }
+        else{
+        	writeFile("Retiro realizado el: "+cal.getTime()+"\n");
+        	System.out.println("");
+        	System.out.println("Transaccion realizada (Retiro) el: "+cal.getTime()+"\n");
+        }
     }
     after() : user(){
         writeFile("Usuario creado el :  "+cal.getTime()+"\n");
